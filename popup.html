@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="button.css" />
+
+    <style>
+      body {
+        position: relative;
+        min-width: 320px;
+        height: 100vh;
+        background-color: #ccc;
+        left: 0;
+        border: 1px solid #000;
+        word-wrap: break-word;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <h1 class="titlex">Sites</h1>
+      <button id="changeColor">Add Current site</button>
+
+      <ul data-sites="urls">
+        <li>www.example.com</li>
+      </ul>
+    </div>
+    <script src="popup.js"></script>
+  </body>
+</html>
