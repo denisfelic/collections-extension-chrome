@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .container {
+        position: relative;
+        height: 70vh;
+      }
+
+      .collection-body {
+      }
+
+      .collection-modal {
+        display: none;
+        width: 320px;
+        height: 100%;
+        background: red;
+        z-index: 99;
+        content: '';
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" data-element-js="container">
+      <div class="container-head" data-element-js="container-head">
+        <span>Collections</span>
+        <button data-element-js="create-collection-btn">
+          Create New Collection
+        </button>
+        <hr />
+      </div>
+      <ul class="collections" data-element-js="collections">
+        <!-- here were the collections list is rendered -->
+      </ul>
+
+      <!-- Modal when user click in a specific collection -->
+      <div class="collection-modal" data-element-js="collection-modal">
+        <button data-collection-modal-js="backButton"><</button>
+        <div class="collection-body">
+          <span class="collection-title" data-element-js="collection-title"
+            >Collection Name Inside</span
+          >
+          <button data-element-js="add-current-page">Add current page</button>
+          <hr />
+          <ul class="links" data-element-js="collection-links">
+            <!-- Here where the links is rendered -->
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      var qtd = 0;
+      const data = [
+        {
+          collectionName: 'Collection Name 1',
+          links: [
+            {
+              link: 'www.google.com',
+            },
+            {
+              link: 'www.microsoft.com',
+            },
+          ],
+        },
+      ];
+      const $ = document.querySelector.bind(document);
+
+      function renderCollectionList() {
+        let collectionsHTML = $(
+          '[data-element-js="container"] [data-element-js="collections"]'
+        );
+        collectionsHTML.innerHTML = '';
+        data.forEach((dt, index) => {
+          let li = document.createElement('li');
+          li.dataset.collectionId = index;
+          li.dataset.collection = 'clickable';
+          li.innerText = dt.collectionName;
+          collectionsHTML.appendChild(li);
+        });
+      }
+
+      function renderCollectionLinks(collectionId) {
+        hideElement('[data-element-js="container-head"]');
+        hideElement('[data-element-js="collections"]');
+
+        let collectionData = data[collectionId];
+
+        let modal = $('[data-element-js="collection-modal"]');
+        modal.innerHTML = `
+        <div class="collection-modal" data-element-js="collection-modal" style="display: block">
+        <button data-collection-modal-js="backButton"><</button>
+        <div class="collection-body">
+          <span class="collection-title" data-element-js="collection-title"
+            >Collection Name Inside</span
+          >
+          <button data-element-js="add-current-page">Add current page</button>
+          <hr />
+          <ul class="links" data-element-js="collection-links">
+            <!-- Here where the links is rendered -->
+          </ul>
+        </div>
+      </div>
+        `;
+
+        modal = $('[data-element-js="collection-modal"]');
+        modal.style.display = 'block';
+        console.log(data);
+        let collectionTitle = modal.querySelector(
+          '[data-element-js="collection-title"]'
+        );
+        let modalLinks = modal.querySelector(
+          '[data-element-js="collection-links"]'
+        );
+
+        modal.style.display = 'block';
+        collectionTitle.innerText = collectionData.collectionName;
+        modalLinks.innerHTML = '';
+
+        // render links from data
+        let linkData = collectionData.links;
+        linkData.forEach((link, index) => {
+          let li = document.createElement('li');
+          li.dataset.dataCollectionLinkId = index;
+          li.textContent = link.link;
+          modalLinks.appendChild(li);
+        });
+
+        listeners.addCurrentPageEvent(collectionId);
+        listeners.modalBackButtonEvent()
+      }
+
+      function updateDOM() {
+        renderCollectionList();
+        listeners.loadsClickableOnCollectionEvent();
+        listeners.createNewCollection();
+        listeners.modalBackButtonEvent();
+      }
+
+      const listeners = {
+        createNewCollection: () => {
+          $('[data-element-js="create-collection-btn"]').addEventListener(
+            'click',
+            (e) => {
+              e.stopPropagation();
+              let collectionName = window.prompt('Collection name');
+              let col = {
+                collectionName: collectionName,
+                links: [],
+              };
+              data.push(col);
+              updateDOM();
+            }
+          );
+        },
+
+        loadsClickableOnCollectionEvent: () => {
+          const collections = document.querySelectorAll(
+            '[data-collection="clickable"]'
+          );
+          collections.forEach((col, index) => {
+            col.addEventListener('click', (event) => {
+              event.stopPropagation();
+              renderCollectionLinks(index);
+              
+            });
+          });
+        },
+
+        modalBackButtonEvent: () => {
+          $('[data-collection-modal-js="backButton"]').addEventListener(
+            'click',
+            (e) => {
+              e.stopPropagation();
+              hideElement('[data-element-js="collection-modal"]');
+              showElement('[data-element-js="container-head"]');
+              showElement('[data-element-js="collections"]');
+            }
+          );
+        },
+
+        addCurrentPageEvent: (collectionId) => {
+          function addPage(e) {
+            e.stopPropagation();
+            let currentLink = window.location.href;
+            data[collectionId].links.push({ link: currentLink });
+            renderCollectionLinks(collectionId);
+          }
+
+          $('[data-element-js="add-current-page"]').addEventListener(
+            'click',
+            addPage
+          );
+          console.log(data[collectionId]);
+        },
+      };
+      updateDOM();
+
+      function hideElement(query) {
+        $(query).style.display = 'none';
+      }
+
+      function showElement(query) {
+        $(query).style.display = 'block';
+      }
+
+     </script>
+  </body>
+</html>
