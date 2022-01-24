@@ -1,29 +1,62 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="button.css" />
-
     <style>
       body {
-        position: relative;
-        min-width: 320px;
+        width: 320px;
         height: 100vh;
-        background-color: #ccc;
-        left: 0;
-        border: 1px solid #000;
-        word-wrap: break-word;
+      }
+      .container {
+        position: relative;
+        height: 70vh;
+      }
+
+      .collection-body {
+      }
+
+      .collection-modal {
+        display: none;
+        width: 320px;
+        height: 100%;
+        background: red;
+        z-index: 99;
+        content: '';
       }
     </style>
   </head>
   <body>
-    <div>
-      <h1 class="titlex">Sites</h1>
-      <button id="changeColor">Add Current site</button>
-
-      <ul data-sites="urls">
-        <li>www.example.com</li>
+    <div class="container" data-element-js="container">
+      <div class="container-head" data-element-js="container-head">
+        <span>Collections</span>
+        <button data-element-js="create-collection-btn">
+          Create New Collection
+        </button>
+        <hr />
+      </div>
+      <ul class="collections" data-element-js="collections">
+        <!-- here were the collections list is rendered -->
       </ul>
+
+      <!-- Modal when user click in a specific collection -->
+      <div class="collection-modal" data-element-js="collection-modal">
+        <button data-collection-modal-js="backButton"><</button>
+        <div class="collection-body">
+          <span class="collection-title" data-element-js="collection-title"
+            >Collection Name Inside</span
+          >
+          <button data-element-js="add-current-page">Add current page</button>
+          <hr />
+          <ul class="links" data-element-js="collection-links">
+            <!-- Here where the links is rendered -->
+          </ul>
+        </div>
+      </div>
     </div>
-    <script src="popup.js"></script>
+
+     <script src="/lib/index.js"  type="module"></script>
+     <script src="/lib/Helpers/CollectionHelpers.js"  type="module"></script>
+     <script src="/lib/events.js"  type="module"></script>
+     <script src="/lib/data/state.js"  type="module"></script>
+     <script src="/lib/render.js"  type="module"></script>
   </body>
 </html>
